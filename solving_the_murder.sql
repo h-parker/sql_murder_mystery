@@ -102,3 +102,51 @@ SELECT *
 
 
 
+/* Based on the interviews, we're going to want to see what the gym member table
+and gym check in table will give us */
+SELECT sql 
+ 	FROM sqlite_master
+ 	WHERE name = 'get_fit_now_member' 
+ 		OR name = 'get_fit_now_check_in';
+/* CREATE TABLE get_fit_now_member ( id text PRIMARY KEY, person_id integer, name 
+text, membership_start_date integer, membership_status text, 
+FOREIGN KEY (person_id) REFERENCES person(id) )
+
+CREATE TABLE get_fit_now_check_in ( membership_id text, check_in_date integer,
+check_in_time integer, check_out_time integer, FOREIGN KEY (membership_id) 
+REFERENCES get_fit_now_member(id) ) */
+
+
+
+/* Let's join the gym tables and get the people with membership ids starting with
+48Z that are gold members and were at the gym on January 9th */
+SELECT id, person_id, name 
+	FROM get_fit_now_member AS m
+		JOIN get_fit_now_check_in AS c ON m.id = c.membership_id
+	WHERE id LIKE '48Z%' 
+		AND membership_status = 'gold'
+		AND check_in_date = 20180109;   
+/* id	person_id	name
+48Z7A	28819		Joe Germuska
+48Z55	67318		Jeremy Bowers */
+
+
+/* Now we can check the license plates of these people look like */
+SELECT name
+	FROM person AS p
+		JOIN drivers_license AS d ON p.license_id = d.id
+	WHERE p.id = 28819
+		OR p.id = 67318;
+/* Jeremy Bowers */
+
+
+
+/* IS IT HIM???? */
+INSERT INTO solution VALUES (1, 'Jeremy Bowers');
+        
+        SELECT value FROM solution;
+/* Congrats, you found the murderer! But wait, there's more... If you think 
+you're up for a challenge, try querying the interview transcript of the murderer 
+to find the real villian behind this crime. If you feel especially confident in 
+your SQL skills, try to complete this final step with no more than 2 queries. 
+Use this same INSERT statement to check your answer. */
